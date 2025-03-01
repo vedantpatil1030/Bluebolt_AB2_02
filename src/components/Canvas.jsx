@@ -32,7 +32,7 @@ export default function Canvas({ components, setComponents }) {
   return (
     <div
       ref={drop}
-      className={`w-3/4 h-full bg-white shadow-md p-4 relative ${
+      className={`w-3/4 h-full bg-white shadow-md p-4 relative overflow-auto ${
         isOver ? "bg-gray-200" : ""
       }`}
     >
@@ -59,7 +59,7 @@ function RndComponent({ comp, updateComponent, deleteComponent }) {
       }}
       bounds="parent"
     >
-      <div className="relative w-full h-full group">
+      <div className="relative w-full h-full group border border-gray-300 rounded-md p-2 bg-white shadow-sm">
         <ComponentRenderer comp={comp} updateComponent={updateComponent} />
         <button
           onClick={() => deleteComponent(comp.id)}
@@ -99,6 +99,51 @@ function ComponentRenderer({ comp, updateComponent }) {
           style={{ outline: "none", resize: "none" }}
         />
       );
+    case "paragraph":
+      return (
+        <p
+          contentEditable
+          onBlur={(e) => updateComponent(comp.id, { text: e.target.innerText })}
+          className="w-full h-full border p-2 bg-transparent text-black"
+          style={{ outline: "none" }}
+        >
+          {comp.text}
+        </p>
+      );
+    case "dropdown":
+      return (
+        <select className="w-full h-full border p-2 bg-white">
+          <option>{comp.text}</option>
+        </select>
+      );
+    case "checkbox":
+      return (
+        <div className="flex items-center">
+          <input type="checkbox" className="mr-2" />
+          <label>{comp.text}</label>
+        </div>
+      );
+    case "radio":
+      return (
+        <div className="flex items-center">
+          <input type="radio" className="mr-2" />
+          <label>{comp.text}</label>
+        </div>
+      );
+    case "datepicker":
+      return <input type="date" className="w-full h-full border p-2" />;
+    case "slider":
+      return <input type="range" className="w-full h-full" />;
+    case "toggle":
+      return (
+        <label className="flex items-center cursor-pointer">
+          <input type="checkbox" className="sr-only" />
+          <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+          <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+        </label>
+      );
+    case "fileupload":
+      return <input type="file" className="w-full h-full border p-2" />;
     default:
       return null;
   }
